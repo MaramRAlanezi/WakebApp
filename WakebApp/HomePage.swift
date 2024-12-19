@@ -6,8 +6,12 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct HomePage: View {
+    @State private var isPickerPresented = false
+       @State private var selectedImage: UIImage? = nil
+    
     var body: some View {
         ZStack {
             Color.offWhite
@@ -21,7 +25,6 @@ struct HomePage: View {
                     .padding(.bottom, 50)
                 
                 Button(action: {
-                    print("Take Photo tapped")
                 }) {
                     HStack {
                     
@@ -39,7 +42,7 @@ struct HomePage: View {
                 }
                 
                 Button(action: {
-                    print("Upload from Album tapped")
+                    isPickerPresented = true
                 }) {
                     HStack {
                         Text("Upload from album")
@@ -54,9 +57,11 @@ struct HomePage: View {
                     .cornerRadius(10)
                     .shadow(color: .gray.opacity(0.5), radius: 10, x: 0, y: 5)
                 }
+                .sheet(isPresented: $isPickerPresented) {
+                    PhotoPicker(selectedImage: $selectedImage)
+                }
                 
                 Button(action: {
-                    print("Saved Documents tapped")
                 }) {
                     HStack {
                         Text("Saved Documents")
@@ -71,12 +76,53 @@ struct HomePage: View {
                     .cornerRadius(10)
                     .shadow(color: .gray.opacity(0.5), radius: 10, x: 0, y: 5)
                 }
+                
             }
             .padding()
+                  }
+                  .navigationBarBackButtonHidden(true)
+              }
+          }
+
+struct PhotoPicker: UIViewControllerRepresentable {
+    @Binding var selectedImage: UIImage?
+    
+    func makeUIViewController(context: Context) -> PHPickerViewController {
+        var configuration = PHPickerConfiguration()
+        configuration.filter = .images
+        configuration.selectionLimit = 1
+        let picker = PHPickerViewController(configuration: configuration)
+        picker.delegate = context.coordinator
+        return picker
+    }
+    
+    func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {}
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    class Coordinator: NSObject, PHPickerViewControllerDelegate {
+        let parent: PhotoPicker
+        
+        init(_ parent: PhotoPicker) {
+            self.parent = parent
+        }
+        
+        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+            picker.dismiss(animated: true)
+            
+            guard let provider = results.first?.itemProvider else { return }
+            if provider.canLoadObject(ofClass: UIImage.self) {
+                provider.loadObject(ofClass: UIImage.self) { image, error in
+                    DispatchQueue.main.async {
+                        self.parent.selectedImage = image as? UIImage
+                    }
+                }
+            }
         }
     }
 }
-
 #Preview {
     HomePage()
 }
