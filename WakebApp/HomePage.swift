@@ -5,12 +5,11 @@
 //  Created by Maram Rabeh  on 17/12/2024.
 //
 
+import SwiftUICore
 import SwiftUI
-import PhotosUI
 
 struct HomePage: View {
-    @State private var isPickerPresented = false
-       @State private var selectedImage: UIImage? = nil
+    @StateObject private var viewModel = HomePageViewModel()
     
     var body: some View {
         ZStack {
@@ -25,9 +24,9 @@ struct HomePage: View {
                     .padding(.bottom, 50)
                 
                 Button(action: {
+                    // Add action for taking a photo
                 }) {
                     HStack {
-                    
                         Text("Take a photo")
                             .font(.headline)
                             .foregroundColor(.black)
@@ -42,7 +41,7 @@ struct HomePage: View {
                 }
                 
                 Button(action: {
-                    isPickerPresented = true
+                    viewModel.openPhotoPicker()
                 }) {
                     HStack {
                         Text("Upload from album")
@@ -57,11 +56,12 @@ struct HomePage: View {
                     .cornerRadius(10)
                     .shadow(color: .gray.opacity(0.5), radius: 10, x: 0, y: 5)
                 }
-                .sheet(isPresented: $isPickerPresented) {
-                    PhotoPicker(selectedImage: $selectedImage)
+                .sheet(isPresented: $viewModel.isPickerPresented) {
+                    PhotoPicker(selectedImage: $viewModel.selectedImage)
                 }
                 
                 Button(action: {
+                    // Add action for saved documents
                 }) {
                     HStack {
                         Text("Saved Documents")
@@ -76,53 +76,13 @@ struct HomePage: View {
                     .cornerRadius(10)
                     .shadow(color: .gray.opacity(0.5), radius: 10, x: 0, y: 5)
                 }
-                
             }
             .padding()
-                  }
-                  .navigationBarBackButtonHidden(true)
-              }
-          }
-
-struct PhotoPicker: UIViewControllerRepresentable {
-    @Binding var selectedImage: UIImage?
-    
-    func makeUIViewController(context: Context) -> PHPickerViewController {
-        var configuration = PHPickerConfiguration()
-        configuration.filter = .images
-        configuration.selectionLimit = 1
-        let picker = PHPickerViewController(configuration: configuration)
-        picker.delegate = context.coordinator
-        return picker
-    }
-    
-    func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {}
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    class Coordinator: NSObject, PHPickerViewControllerDelegate {
-        let parent: PhotoPicker
-        
-        init(_ parent: PhotoPicker) {
-            self.parent = parent
         }
-        
-        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-            picker.dismiss(animated: true)
-            
-            guard let provider = results.first?.itemProvider else { return }
-            if provider.canLoadObject(ofClass: UIImage.self) {
-                provider.loadObject(ofClass: UIImage.self) { image, error in
-                    DispatchQueue.main.async {
-                        self.parent.selectedImage = image as? UIImage
-                    }
-                }
-            }
-        }
+        .navigationBarBackButtonHidden(true)
     }
 }
+
 #Preview {
     HomePage()
 }
