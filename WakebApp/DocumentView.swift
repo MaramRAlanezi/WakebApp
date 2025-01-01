@@ -1,28 +1,27 @@
-//
-//  DocumentView.swift
-//  WakebApp
-//
-//  Created by Reuof on 25/12/2024.
-//
-
-
 
 import SwiftUI
 
 struct DocumentView: View {
     var document: SavedDocument
-  
+
     var body: some View {
         ScrollView {
-            ZStack {
-                Color.offWhite
-                    .ignoresSafeArea()
-         
-                Text(document.content)
+            VStack(spacing: 20) {
+                Text(document.title)
+                    .font(.title)
+                    .fontWeight(.bold)
                     .padding()
-                    .navigationTitle(document.title)
-                    .navigationBarTitleDisplayMode(.inline)
+
+                // Directly display the extracted text
+                Text(document.content) // Assuming 'content' holds the recognized text
+                    .padding()
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(8)
+                
             }
+            .padding()
+            .navigationTitle("Document Details")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }

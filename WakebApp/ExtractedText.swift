@@ -16,7 +16,7 @@ struct ExtractedText: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .navigationTitle("Recognized Text")
                     .navigationBarTitleDisplayMode(.inline)
-                
+                    .navigationBarHidden(true) 
                 // Button to navigate to ReadingPage
                 NavigationLink(destination: ReadingPage(extractedText: recognizedText)) {
                     Text("Confirm")

@@ -6,7 +6,7 @@ class ViewController: UIViewController {
     private var captureSession: AVCaptureSession!
     private var photoOutput: AVCapturePhotoOutput!
     private var previewLayer: AVCaptureVideoPreviewLayer!
-    
+
     private var capturedImageView: UIImageView? // To display the captured image
     private var isPhotoCaptured = false // Track if a photo has been captured
 
@@ -74,6 +74,29 @@ class ViewController: UIViewController {
         view.layer.addSublayer(previewLayer)
 
         captureSession.startRunning()
+        
+        setupZoomGesture() // Add zoom gesture setup
+    }
+
+    private func setupZoomGesture() {
+        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch))
+        view.addGestureRecognizer(pinchGesture)
+    }
+
+    @objc private func handlePinch(gesture: UIPinchGestureRecognizer) {
+        guard let device = AVCaptureDevice.default(for: .video) else { return }
+        
+        do {
+            try device.lockForConfiguration()
+            let newScale = device.videoZoomFactor * gesture.scale
+            device.videoZoomFactor = min(max(newScale, 1.0), device.activeFormat.videoMaxZoomFactor)
+            device.unlockForConfiguration()
+        } catch {
+            print("Error locking configuration: \(error)")
+        }
+
+        // Reset the scale to 1.0 for the next pinch
+        gesture.scale = 1.0
     }
 
     override func viewWillLayoutSubviews() {
@@ -117,7 +140,7 @@ class ViewController: UIViewController {
         let button = UIButton(frame: CGRect(x: view.bounds.width - 90, y: view.bounds.height - 100, width: 80, height: 40))
         button.setTitle("Save", for: .normal)
         button.setTitleColor(.white, for: .focused)
-        button.backgroundColor = .sage
+        button.backgroundColor = .systemTeal
         button.layer.cornerRadius = 10
         button.addTarget(self, action: #selector(savePhoto), for: .touchUpInside)
         return button
@@ -132,6 +155,7 @@ class ViewController: UIViewController {
         button.addTarget(self, action: #selector(retakePhoto), for: .touchUpInside)
         return button
     }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         

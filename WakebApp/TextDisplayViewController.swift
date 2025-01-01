@@ -24,33 +24,27 @@ class TextDisplayViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupNavigationButton()
+        setupView()
 
         // Observe changes to recognizedText
         viewModel.$recognizedText
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                // Handle updates if necessary
+            .sink { [weak self] recognizedText in
+                self?.navigateToExtractedTextPage(with: recognizedText)
             }
             .store(in: &cancellables)
     }
 
-    private func setupNavigationButton() {
-        let viewTextButton = UIButton(type: .system)
-        viewTextButton.setTitle("Confirm", for: .normal)
-        viewTextButton.addTarget(self, action: #selector(navigateToExtractedTextPage), for: .touchUpInside)
-        viewTextButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(viewTextButton)
-
-        // Layout the button
-        NSLayoutConstraint.activate([
-            viewTextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            viewTextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
-        ])
+    private func setupView() {
+        view.backgroundColor = .white // Set background color for clarity
+        // Additional setup if needed (e.g., labels or loading indicators)
     }
-    @objc private func navigateToExtractedTextPage() {
-        // Use the correct name for the parameter in the ExtractedText view
-        let extractedTextPage = ExtractedText(recognizedText: viewModel.recognizedText)
+
+    private func navigateToExtractedTextPage(with recognizedText: String) {
+        // Check if recognizedText is not empty before navigating
+        guard !recognizedText.isEmpty else { return }
+        
+        let extractedTextPage = ExtractedText(recognizedText: recognizedText)
         let hostingController = UIHostingController(rootView: extractedTextPage)
 
         // Navigate to the ExtractedText page

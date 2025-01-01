@@ -11,7 +11,7 @@ struct DisplayTextView: View {
                 .padding()
                 .navigationTitle("Recognized Text")
                 .navigationBarTitleDisplayMode(.inline)
-            
+         
             Spacer()
           
 //           delete this

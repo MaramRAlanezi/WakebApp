@@ -10,7 +10,6 @@
 		4699E71C2D1C0A0400B606C2 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 4699E71B2D1C0A0400B606C2 /* Localizable.xcstrings */; };
 		4699E71E2D1C125300B606C2 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 4699E71D2D1C125300B606C2 /* InfoPlist.xcstrings */; };
 		B1A188C52D17F30D00392F35 /* PersistenceController.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B1A188C32D17F30D00392F35 /* PersistenceController.xcdatamodeld */; };
-		B1E9A41F2D1A8BB100B56622 /* PersistenceDocuments.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B1E9A41D2D1A8BB100B56622 /* PersistenceDocuments.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,7 +36,6 @@
 		4699E71B2D1C0A0400B606C2 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		4699E71D2D1C125300B606C2 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		B1A188C42D17F30D00392F35 /* PersistenceController.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PersistenceController.xcdatamodel; sourceTree = "<group>"; };
-		B1E9A41E2D1A8BB100B56622 /* PersistenceDocuments.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PersistenceDocuments.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -126,7 +124,6 @@
 				4699E71B2D1C0A0400B606C2 /* Localizable.xcstrings */,
 				4699E71D2D1C125300B606C2 /* InfoPlist.xcstrings */,
 				B1A188C32D17F30D00392F35 /* PersistenceController.xcdatamodeld */,
-				B1E9A41D2D1A8BB100B56622 /* PersistenceDocuments.xcdatamodeld */,
 				461D5B8C2D096F9E00A5CE91 /* WakebApp */,
 				461D5B9D2D096FA000A5CE91 /* WakebAppTests */,
 				461D5BA72D096FA000A5CE91 /* WakebAppUITests */,
@@ -292,7 +289,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1A188C52D17F30D00392F35 /* PersistenceController.xcdatamodeld in Sources */,
-				B1E9A41F2D1A8BB100B56622 /* PersistenceDocuments.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -455,7 +451,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"WakebApp/Preview Content\"";
-				DEVELOPMENT_TEAM = M6L5Y5JY9X;
+				DEVELOPMENT_TEAM = 254AZ2D7LG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WakebApp/Info.plist;
@@ -486,7 +482,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"WakebApp/Preview Content\"";
-				DEVELOPMENT_TEAM = M6L5Y5JY9X;
+				DEVELOPMENT_TEAM = 254AZ2D7LG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WakebApp/Info.plist;
@@ -628,16 +624,6 @@
 			);
 			currentVersion = B1A188C42D17F30D00392F35 /* PersistenceController.xcdatamodel */;
 			path = PersistenceController.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-		B1E9A41D2D1A8BB100B56622 /* PersistenceDocuments.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				B1E9A41E2D1A8BB100B56622 /* PersistenceDocuments.xcdatamodel */,
-			);
-			currentVersion = B1E9A41E2D1A8BB100B56622 /* PersistenceDocuments.xcdatamodel */;
-			path = PersistenceDocuments.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

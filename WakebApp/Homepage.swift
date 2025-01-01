@@ -1,20 +1,15 @@
-
-//  HomePage.swift
-//  WakebApp
-//
-//  Created by Maram Rabeh  on 17/12/2024.
-//
 import SwiftUI
-import PhotosUI
 
 struct HomePage: View {
+    @State private var navigateToImageDisplay = false
     @State private var isPickerPresented = false
-    @State private var selectedImage: UIImage? = nil
+    @State private var selectedImage: UIImage?
     @StateObject private var viewModel = TextScannerViewModel()
     @State private var isTextViewPresented = false
-    @State private var documentTitle: String = "Untitled Document" // Default title for saved documents
-    @State private var isSavedDocumentsPresented = false // State to control saved documents view
-
+    @State private var documentTitle: String = "Untitled Document"
+    @State private var isSavedDocumentsPresented = false
+    @State private var isLoading = false // Loading state variable
+  //  @State private var Player: AVAudioPlayer?
     var body: some View {
         NavigationStack {
             ZStack {
@@ -27,7 +22,7 @@ struct HomePage: View {
                         .fontWeight(.bold)
                         .foregroundColor(.black)
                         .padding(.bottom, 50)
-
+                    
                     // Navigation link to CameraView
                     NavigationLink(destination: CameraView(viewModel: viewModel, onCapturePhoto: {
                         if !viewModel.recognizedText.isEmpty {
@@ -47,10 +42,16 @@ struct HomePage: View {
                         .cornerRadius(10)
                         .shadow(color: .gray.opacity(0.5), radius: 10, x: 0, y: 5)
                     })
-
+                    .simultaneousGesture(TapGesture().onEnded {
+                        //          playSound()
+                       // print("FF")
+                    })
+                    
+                    
+                    
                     // Button to upload from album
                     Button(action: {
-                        isPickerPresented = true
+                        isPickerPresented = true // Trigger the photo picker
                     }) {
                         HStack {
                             Text("Upload from album")
@@ -64,112 +65,68 @@ struct HomePage: View {
                         .background(Color.softy)
                         .cornerRadius(10)
                         .shadow(color: .gray.opacity(0.5), radius: 10, x: 0, y: 5)
-                    }
+                    }.simultaneousGesture(TapGesture().onEnded {
+                        //      playSound()
+                       // print("FF")
+                    })
                     .sheet(isPresented: $isPickerPresented) {
                         PhotoPicker(selectedImage: $selectedImage)
                             .onChange(of: selectedImage) { newImage in
                                 if let image = newImage {
                                     viewModel.processCapturedImage(image)
                                     print("Recognized Text: \(viewModel.recognizedText)") // Debugging output
-                                    if !viewModel.recognizedText.isEmpty {
-                                        isTextViewPresented = true
-                                    }
+                                    
+                                    // Set navigation state immediately after image selection
+                                    navigateToImageDisplay = true
                                 }
                             }
                     }
-
-                    // Button to save the recognized text and navigate to saved documents
-                    Button(action: {
-                        viewModel.saveDocument(title: documentTitle)
-                        viewModel.recognizedText = "" // Optionally reset recognized text
-                        isSavedDocumentsPresented = true // Navigate to saved documents
-                    }) {
-                        HStack {
-                            Text("Saved doucements")
-                                .font(.headline)
-                                .foregroundColor(.black)
-                            Image(systemName: "document.fill")
-                                .foregroundColor(.black)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(50)
-                        .background(Color.softy)
-                        .cornerRadius(10)
-                        .shadow(color: .gray.opacity(0.5), radius: 10, x: 0, y: 5)
-                    }
-                    .sheet(isPresented: $isSavedDocumentsPresented) {
-                        SavedDocumentsView(viewModel: viewModel)
-                    }
-
-
-                    // Programmatic navigation to ExtractedText view if text is recognized
-                    NavigationLink(destination: ExtractedText(recognizedText: viewModel.recognizedText), isActive: $isTextViewPresented) {
+                    
+                    // Programmatic navigation to ImageDisplayView if an image is selected
+                    NavigationLink(
+                        destination: ImageDisplayView(image: selectedImage ?? UIImage(), recognizedText: viewModel.recognizedText, selectedImage: $selectedImage, isPickerPresented: $isPickerPresented),
+                        isActive: $navigateToImageDisplay
+                    ) {
                         EmptyView()
                     }
-                }
-                .padding()
-                .navigationBarBackButtonHidden(true)
-            }
-        }
-    }
-
-    struct PhotoPicker: UIViewControllerRepresentable {
-        @Binding var selectedImage: UIImage?
-
-        func makeUIViewController(context: Context) -> PHPickerViewController {
-            var configuration = PHPickerConfiguration()
-            configuration.filter = .images
-            configuration.selectionLimit = 1
-            let picker = PHPickerViewController(configuration: configuration)
-            picker.delegate = context.coordinator
-            return picker
-        }
-
-        func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {}
-
-        func makeCoordinator() -> Coordinator {
-            Coordinator(self)
-        }
-
-        class Coordinator: NSObject, PHPickerViewControllerDelegate {
-            let parent: PhotoPicker
-
-            init(_ parent: PhotoPicker) {
-                self.parent = parent
-            }
-
-            func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-                picker.dismiss(animated: true)
-
-                guard let provider = results.first?.itemProvider else { return }
-                if provider.canLoadObject(ofClass: UIImage.self) {
-                    provider.loadObject(ofClass: UIImage.self) { image, error in
-                        DispatchQueue.main.async {
-                            self.parent.selectedImage = image as? UIImage
+                    
+                    Button(action: {
+                        isLoading = true // Set loading state to true
+                        viewModel.saveDocument(title: documentTitle) // Save the document
+                        isSavedDocumentsPresented = true // Navigate to saved documents view
+                        isLoading = false // Set loading state to false after saving
+                    }) {
+                        if isLoading {
+                            ProgressView() // Show loading indicator
+                                .progressViewStyle(CircularProgressViewStyle())
+                        } else {
+                            HStack {
+                                Text("Save Document")
+                                    .font(.headline)
+                                    .foregroundColor(.black)
+                                Image(systemName: "document.fill")
+                                    .foregroundColor(.black)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(50)
+                            .background(Color.softy)
+                            .cornerRadius(10)
+                            .shadow(color: .gray.opacity(0.5), radius: 10, x: 0, y: 5)
                         }
+                        
+                        
                     }
                 }
-            }
-        }
-    }
-}
-
-// View to display saved documents
-struct SavedDocumentsView: View {
-    @ObservedObject var viewModel: TextScannerViewModel
-
-    var body: some View {
-        NavigationView {
-            List(viewModel.savedDocuments) { document in
-                NavigationLink(destination: DocumentView(document: document)) {
-                    Text(document.title)
-                }
-            }
-            .navigationTitle("Saved Document")
-  
-        }
-    }
-}
+                                      .navigationDestination(isPresented: $isSavedDocumentsPresented) {
+                                          SavedDocumentsView(viewModel: viewModel)
+                                      }
+                                  }
+                                  .padding()
+                                  .navigationBarBackButtonHidden(true)
+                              }
+                          }
+                      }
+                  
 
 #Preview {
     HomePage()

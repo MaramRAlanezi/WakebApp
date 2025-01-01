@@ -8,7 +8,7 @@ import SwiftUI
 
 struct CameraView: UIViewControllerRepresentable {
     @ObservedObject var viewModel: TextScannerViewModel
-    var onCapturePhoto: (() -> Void)? 
+    var onCapturePhoto: (() -> Void)?
 
     class Coordinator: NSObject {
         var parent: CameraView
@@ -28,14 +28,10 @@ struct CameraView: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> ViewController {
         let cameraViewController = ViewController(viewModel: viewModel)
-   
-            context.coordinator.capturePhoto()
-        
         return cameraViewController
-    
     }
 
     func updateUIViewController(_ uiViewController: ViewController, context: Context) {
-        
+        // Handle updates if needed
     }
 }
